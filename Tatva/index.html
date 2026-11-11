@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zero-Trust Script & Dependency Shield</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { dark: '#0b0f19', card: '#111827', border: '#1f2937', accent: '#3b82f6', danger: '#ef4444', success: '#10b981', warning: '#f59e0b' }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#080c14] text-gray-100 font-sans min-h-screen flex flex-col">
+
+  <!-- Header / Navigation Bar -->
+  <header class="border-b border-gray-800 bg-[#0d1321] px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+      <div class="p-2 bg-blue-600/20 text-blue-400 rounded-lg border border-blue-500/30">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+      </div>
+      <div>
+        <h1 class="text-xl font-bold tracking-wide text-white">ZERO-TRUST <span class="text-blue-500">SHIELD</span></h1>
+        <p class="text-xs text-gray-400">Client-Side Script & Dependency Inspector</p>
+      </div>
+    </div>
+    <div class="flex items-center space-x-4">
+      <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+        <span class="w-2 h-2 mr-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Policy Enforced
+      </span>
+    </div>
+  </header>
+
+  <!-- Main Dashboard Grid -->
+  <main class="flex-1 p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-[1600px] mx-auto w-full">
+    
+    <!-- Left Column: Code / Script Input Engine (7 Cols) -->
+    <section class="lg:col-span-7 flex flex-col bg-[#0d1321] border border-gray-800 rounded-xl overflow-hidden shadow-2xl">
+      <div class="bg-[#131b2e] px-4 py-3 border-b border-gray-800 flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+          <span class="text-sm font-semibold text-gray-300">Input Source Code / Dependency Snippet</span>
+        </div>
+        <div class="flex space-x-2">
+          <button id="sampleBtn" class="px-3 py-1 text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 rounded border border-gray-700 transition">Load Malicious Test Case</button>
+          <button id="clearBtn" class="px-3 py-1 text-xs bg-gray-800 hover:bg-gray-700 text-gray-400 rounded border border-gray-700 transition">Clear</button>
+        </div>
+      </div>
+      <div class="flex-1 relative p-4">
+        <textarea id="codeInput" class="w-full h-[480px] bg-[#070a10] text-gray-200 font-mono text-sm p-4 rounded-lg border border-gray-800 focus:outline-none focus:border-blue-500/50 resize-none leading-relaxed" placeholder="// Paste JavaScript code, package manifests, or script URLs here for Zero-Trust evaluation..."></textarea>
+      </div>
+      <div class="p-4 bg-[#131b2e] border-t border-gray-800 flex justify-between items-center">
+        <button id="scanBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 px-6 rounded-lg transition flex items-center justify-center space-x-2 shadow-lg shadow-blue-600/20">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <span>Run Zero-Trust Audit</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Right Column: Audit Results & Threat Telemetry (5 Cols) -->
+    <section class="lg:col-span-5 flex flex-col space-y-6">
+      
+      <!-- Metrics Card -->
+      <div class="bg-[#0d1321] border border-gray-800 rounded-xl p-6 shadow-2xl">
+        <h2 class="text-xs font-bold text-gray-400 tracking-wider uppercase mb-4">Security Assessment Overview</h2>
+        <div class="grid grid-cols-2 gap-4">
+          
+          <!-- Trust Score Gauge -->
+          <div class="bg-[#070a10] border border-gray-800 rounded-lg p-4 text-center flex flex-col justify-center items-center">
+            <span class="text-xs text-gray-400 font-medium mb-1">Zero-Trust Score</span>
+            <div id="scoreDisplay" class="text-4xl font-extrabold text-gray-500">--</div>
+            <span id="scoreStatus" class="text-[11px] font-semibold mt-1 text-gray-500">Awaiting Scan</span>
+          </div>
+
+          <!-- Quick Metrics -->
+          <div class="flex flex-col justify-between space-y-2">
+            <div class="bg-[#070a10] border border-gray-800 rounded-lg p-3">
+              <span class="text-[10px] text-gray-400 uppercase tracking-wider block">Threats Found</span>
+              <span id="threatCount" class="text-xl font-bold text-gray-300">0</span>
+            </div>
+            <div class="bg-[#070a10] border border-gray-800 rounded-lg p-3">
+              <span class="text-[10px] text-gray-400 uppercase tracking-wider block">Scan Status</span>
+              <span id="statusBadge" class="text-xs font-semibold text-gray-400">Idle</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Remediation Action Button -->
+        <button id="remediateBtn" disabled class="mt-4 w-full bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-600/30 font-semibold py-2 px-4 rounded-lg transition disabled:opacity-40 disabled:cursor-not-allowed text-xs flex items-center justify-center space-x-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+          <span>Apply 1-Click Remediation Patch</span>
+        </button>
+      </div>
+
+      <!-- Vulnerability Details Panel -->
+      <div class="flex-1 bg-[#0d1321] border border-gray-800 rounded-xl flex flex-col overflow-hidden shadow-2xl min-h-[300px]">
+        <div class="bg-[#131b2e] px-4 py-3 border-b border-gray-800">
+          <h3 class="text-sm font-semibold text-gray-300">Detected Security Findings</h3>
+        </div>
+        <div id="findingsContainer" class="flex-1 p-4 overflow-y-auto space-y-3">
+          <div class="text-center py-12 text-gray-500 text-xs">
+            Paste code and click "Run Zero-Trust Audit" to evaluate vulnerabilities.
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- JavaScript Rule Engine -->
+  <script>
+    // Sample high-risk test script
+    const sampleVulnerableCode = `// Production Payment Handler Mock
+const AWS_SECRET_KEY = "AKIAIOSFODNN7EXAMPLE_SECRET_KEY_EXPOSED";
+const API_URL = "http://insecure-payment-gateway.com/api/v1";
+
+function processPayment(userPayload) {
+    // Dangerous dynamic code execution vulnerability
+    eval("var user = " + userPayload);
+    
+    // Insecure hashing algorithm check
+    let checksum = md5(userPayload);
+    
+    // Unsanitized DOM injection vulnerability
+    document.getElementById("output").innerHTML = user.comment;
+    
+    return fetch(API_URL, { method: "POST", body: JSON.stringify(user) });
+}`;
+
+    // Elements
+    const codeInput = document.getElementById('codeInput');
+    const scanBtn = document.getElementById('scanBtn');
+    const sampleBtn = document.getElementById('sampleBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const remediateBtn = document.getElementById('remediateBtn');
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    const scoreStatus = document.getElementById('scoreStatus');
+    const threatCount = document.getElementById('threatCount');
+    const statusBadge = document.getElementById('statusBadge');
+    const findingsContainer = document.getElementById('findingsContainer');
+
+    // Rule definitions for analysis
+    const securityRules = [
+      {
+        id: 'EXPOSED_SECRET',
+        severity: 'CRITICAL',
+        penalty: 40,
+        pattern: /(AWS_SECRET_KEY|AKIA[0-9A-Z]{16}|secret_key\s*=|api_key\s*=)/gi,
+        title: 'Exposed API Secret / Hardcoded Credential',
+        desc: 'Hardcoded credentials or AWS keys detected directly inside source code.',
+        fix: 'Store credentials securely in server-side environment variables.'
+      },
+      {
+        id: 'DANGEROUS_EVAL',
+        severity: 'CRITICAL',
+        penalty: 35,
+        pattern: /\beval\s*\(/gi,
+        title: 'Dynamic Code Execution (eval)',
+        desc: 'Use of eval() allows execution of arbitrary strings, creating severe Remote Code Execution (RCE) vectors.',
+        fix: 'Replace eval() with structured JSON.parse() or explicit object mapping.'
+      },
+      {
+        id: 'INSECURE_HTTP',
+        severity: 'WARNING',
+        penalty: 15,
+        pattern: /http:\/\/[^\s"']+/gi,
+        title: 'Unencrypted HTTP Endpoint',
+        desc: 'Traffic sent over unencrypted HTTP protocol is susceptible to Man-In-The-Middle (MITM) attacks.',
+        fix: 'Upgrade endpoints to HTTPS.'
+      },
+      {
+        id: 'UNSANITIZED_DOM',
+        severity: 'WARNING',
+        penalty: 15,
+        pattern: /\.innerHTML\s*=/gi,
+        title: 'Unsanitized DOM Injection (.innerHTML)',
+        desc: 'Directly assigning un-escaped user input to innerHTML opens Cross-Site Scripting (XSS) risks.',
+        fix: 'Use textContent or clean user inputs with DOMPurify.'
+      },
+      {
+        id: 'WEAK_CRYPTO',
+        severity: 'INFO',
+        penalty: 10,
+        pattern: /\b(md5|sha1)\s*\(/gi,
+        title: 'Weak Cryptographic Hashing',
+        desc: 'MD5 / SHA1 algorithms are cryptographically broken and vulnerable to collision attacks.',
+        fix: 'Upgrade to SHA-256 or bcrypt.'
+      }
+    ];
+
+    let currentFindings = [];
+
+    // Load sample code
+    sampleBtn.addEventListener('click', () => {
+      codeInput.value = sampleVulnerableCode;
+    });
+
+    // Clear input
+    clearBtn.addEventListener('click', () => {
+      codeInput.value = '';
+      resetScanState();
+    });
+
+    function resetScanState() {
+      scoreDisplay.textContent = '--';
+      scoreDisplay.className = 'text-4xl font-extrabold text-gray-500';
+      scoreStatus.textContent = 'Awaiting Scan';
+      scoreStatus.className = 'text-[11px] font-semibold mt-1 text-gray-500';
+      threatCount.textContent = '0';
+      statusBadge.textContent = 'Idle';
+      statusBadge.className = 'text-xs font-semibold text-gray-400';
+      findingsContainer.innerHTML = `<div class="text-center py-12 text-gray-500 text-xs">Paste code and click "Run Zero-Trust Audit" to evaluate vulnerabilities.</div>`;
+      remediateBtn.disabled = true;
+      currentFindings = [];
+    }
+
+    // Run Security Scan
+    scanBtn.addEventListener('click', () => {
+      const code = codeInput.value;
+      if (!code.trim()) {
+        alert('Please paste some code to evaluate.');
+        return;
+      }
+
+      currentFindings = [];
+      let totalPenalty = 0;
+      const lines = code.split('\n');
+
+      securityRules.forEach(rule => {
+        lines.forEach((lineText, index) => {
+          if (rule.pattern.test(lineText)) {
+            currentFindings.push({
+              ...rule,
+              line: index + 1,
+              codeSnippet: lineText.trim()
+            });
+            totalPenalty += rule.penalty;
+          }
+          // Reset pattern regex state
+          rule.pattern.lastIndex = 0;
+        });
+      });
+
+      renderResults(totalPenalty);
+    });
+
+    // Render Telemetry & Audit Findings
+    function renderResults(totalPenalty) {
+      const finalScore = Math.max(0, 100 - totalPenalty);
+      
+      scoreDisplay.textContent = finalScore;
+      threatCount.textContent = currentFindings.length;
+
+      if (finalScore >= 80) {
+        scoreDisplay.className = 'text-4xl font-extrabold text-emerald-400';
+        scoreStatus.textContent = 'PASSED (Trust Verified)';
+        scoreStatus.className = 'text-[11px] font-semibold mt-1 text-emerald-400';
+        statusBadge.textContent = 'SECURE';
+        statusBadge.className = 'text-xs font-semibold text-emerald-400';
+      } else if (finalScore >= 50) {
+        scoreDisplay.className = 'text-4xl font-extrabold text-amber-400';
+        scoreStatus.textContent = 'MODERATE RISK';
+        scoreStatus.className = 'text-[11px] font-semibold mt-1 text-amber-400';
+        statusBadge.textContent = 'WARNING';
+        statusBadge.className = 'text-xs font-semibold text-amber-400';
+      } else {
+        scoreDisplay.className = 'text-4xl font-extrabold text-rose-500';
+        scoreStatus.textContent = 'ZERO-TRUST BLOCKED';
+        scoreStatus.className = 'text-[11px] font-semibold mt-1 text-rose-500';
+        statusBadge.textContent = 'CRITICAL THREAT';
+        statusBadge.className = 'text-xs font-semibold text-rose-500';
+      }
+
+      if (currentFindings.length === 0) {
+        findingsContainer.innerHTML = `
+          <div class="text-center py-12 text-emerald-400 text-xs">
+            ✓ No security vulnerabilities detected. Code satisfies Zero-Trust execution rules.
+          </div>`;
+        remediateBtn.disabled = true;
+        return;
+      }
+
+      remediateBtn.disabled = false;
+      findingsContainer.innerHTML = '';
+
+      currentFindings.forEach(item => {
+        const badgeColor = item.severity === 'CRITICAL' 
+          ? 'bg-rose-500/10 text-rose-400 border-rose-500/30' 
+          : item.severity === 'WARNING' 
+          ? 'bg-amber-500/10 text-amber-400 border-amber-500/30' 
+          : 'bg-blue-500/10 text-blue-400 border-blue-500/30';
+
+        const card = document.createElement('div');
+        card.className = 'bg-[#070a10] border border-gray-800 rounded-lg p-3 text-xs space-y-2';
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="font-semibold text-gray-200">${item.title}</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold border ${badgeColor}">${item.severity}</span>
+          </div>
+          <p class="text-gray-400 leading-relaxed">${item.desc}</p>
+          <div class="bg-black/50 p-2 rounded font-mono text-[11px] text-gray-300 flex justify-between">
+            <span class="truncate">Line ${item.line}: ${escapeHtml(item.codeSnippet)}</span>
+          </div>
+          <div class="text-[11px] text-emerald-400 font-medium">
+            💡 Fix: ${item.fix}
+          </div>
+        `;
+        findingsContainer.appendChild(card);
+      });
+    }
+
+    // 1-Click Remediation Patch Functionality
+    remediateBtn.addEventListener('click', () => {
+      let code = codeInput.value;
+
+      // Apply automatic fixes
+      code = code.replace(/(AWS_SECRET_KEY|AKIA[0-9A-Z]{16}|secret_key\s*=).*/gi, 'const AWS_SECRET_KEY = process.env.AWS_SECRET_KEY; // [Remediated]');
+      code = code.replace(/eval\s*\(([^)]+)\)/gi, 'JSON.parse($1) /* [Remediated: Replaced eval] */');
+      code = code.replace(/http:\/\//gi, 'https://');
+      code = code.replace(/\.innerHTML\s*=\s*(.*);/gi, '.textContent = $1; // [Remediated: Prevent XSS]');
+      code = code.replace(/\bmd5\((.*)\)/gi, 'crypto.subtle.digest("SHA-256", $1) /* [Remediated] */');
+
+      codeInput.value = code;
+      scanBtn.click(); // Re-run scan to update scores dynamically
+    });
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+  </script>
+</body>
+</html>
